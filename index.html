@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cupón de Descuento - Pueblo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #2f2f2f; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 380px; padding: 25px; text-align: center; border: 3px solid #5E7154; }
+    .badge-live { display: inline-flex; align-items: center; gap: 6px; background-color: #ecfdf5; color: #047857; font-weight: bold; font-size: 13px; padding: 6px 14px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #a7f3d0; }
+    .pulse-dot { width: 10px; height: 10px; background-color: #10b981; border-radius: 50%; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+    .logo { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 5px; }
+    .image-cupon {width: 100%}
+    .discount { font-size: 42px; font-weight: 900; color: #ff6b35; margin: 10px 0; }
+    .subtitle { font-size: 14px; color: #64748b; margin-bottom: 20px; }
+    .timer-box { background: #5E7154; color: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+    .date-text { font-size: 14px; color: white; text-transform: capitalize; }
+    .time-text { font-size: 32px; font-weight: bold; font-family: monospace; color: white; letter-spacing: 2px; margin: 5px 0; }
+    .countdown-text { font-size: 12px; color: #2f2f2f; font-weight: 600; }
+    .notice { font-size: 12px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="badge-live">
+      <div class="pulse-dot"></div> Cupón Activo
+    </div>
+
+    <img src="./cupon.webp" alt="cupon" class="image-cupon" />
+
+    <!-- Caja con Reloj en Vivo -->
+    <div class="timer-box">
+      <div class="date-text" id="current-date">Cargando fecha...</div>
+      <div class="time-text" id="current-time">00:00:00</div>
+      <div class="countdown-text" id="countdown">Este cupón expira en: 15:00 min</div>
+    </div>
+
+    <p class="notice">Válido exclusivamente en el día y turno de emisión. Válido por 1 solo uso.</p>
+  </div>
+
+  <script>
+    // 1. Mostrar la fecha actual
+    const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-ES', optionsDate);
+
+    // 2. Reloj digital en vivo que se actualiza cada 1 segundo
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('current-time').innerText = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 3. Cuenta regresiva de 15 minutos desde que abrió la página
+    let duration = 15 * 60; // 15 minutos en segundos
+    const countdownEl = document.getElementById('countdown');
+
+    const timer = setInterval(() => {
+      let minutes = parseInt(duration / 60, 10);
+      let seconds = parseInt(duration % 60, 10);
+
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      countdownEl.innerText = `Este cupón expira en: ${minutes}:${seconds} min`;
+
+      if (--duration < 0) {
+        clearInterval(timer);
+        countdownEl.innerText = "¡CUPÓN EXPIRADO!";
+        countdownEl.style.color = "#ef4444";
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
